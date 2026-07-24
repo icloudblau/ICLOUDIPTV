@@ -898,56 +898,35 @@
                                 <option value="Germany" data-code="+49">🇩🇪 Germany</option>
                                 <option value="France" data-code="+33">🇫🇷 France</option>
                                 <option value="Spain" data-code="+34">🇪🇸 Spain</option>
-                                <option value="Italy" data-code="+39">🇮🇹 Italy</option>
-                                <option value="Netherlands" data-code="+31">🇳🇱 Netherlands</option>
-                                <option value="United Arab Emirates" data-code="+971">🇦🇪 United Arab Emirates</option>
-                                <option value="Saudi Arabia" data-code="+966">🇸🇦 Saudi Arabia</option>
-                                <option value="Brazil" data-code="+55">🇧🇷 Brazil</option>
-                                <option value="India" data-code="+91">🇮🇳 India</option>
-                                <option value="Nigeria" data-code="+234">🇳🇬 Nigeria</option>
-                                <option value="South Africa" data-code="+27">🇿🇦 South Africa</option>
                             </select>
                         </div>
 
                         <div class="form-group">
-                            <label for="phone">Phone Number</label>
+                            <label for="phone">WhatsApp Phone Number</label>
                             <div class="phone-input-group">
-                                <select id="country_code" name="country_code" required class="form-select phone-code-select" aria-label="Country Code">
-                                    <option value="+1">🇺🇸 +1</option>
-                                    <option value="+44">🇬🇧 +44</option>
-                                    <option value="+1">🇨🇦 +1</option>
-                                    <option value="+61">🇦🇺 +61</option>
-                                    <option value="+49">🇩🇪 +49</option>
-                                    <option value="+33">🇫🇷 +33</option>
-                                    <option value="+34">🇪🇸 +34</option>
-                                    <option value="+39">🇮🇹 +39</option>
-                                    <option value="+31">🇳🇱 +31</option>
-                                    <option value="+971">🇦🇪 +971</option>
-                                    <option value="+966">🇸🇦 +966</option>
-                                    <option value="+55">🇧🇷 +55</option>
-                                    <option value="+91">🇮🇳 +91</option>
-                                    <option value="+234">🇳🇬 +234</option>
-                                    <option value="+27">🇿🇦 +27</option>
-                                </select>
-                                <input type="tel" id="phone" name="phone" placeholder="(555) 000-0000" required>
+                                <input type="text" id="phone-code" class="form-select phone-code-select" placeholder="+1" readonly>
+                                <input type="tel" id="phone" name="phone" placeholder="123 456 7890" required>
                             </div>
                         </div>
 
                         <div class="form-group full-width">
                             <label for="message">Message</label>
-                            <textarea id="message" name="message" rows="5" placeholder="How can we help you? Ask about subscriptions, trial setup, devices, etc." required></textarea>
+                            <textarea id="message" name="message" placeholder="How can we help you?" required></textarea>
+                        </div>
+
+                        <div class="form-group full-width">
+                            <button type="submit" class="btn-glow">Send Message</button>
                         </div>
 
                     </div>
-                    <button type="submit" id="submit-btn" class="btn-glow" style="width: 100%; margin-top: 1rem;">Submit</button>
                 </form>
             </div>
         </section>
     </main>
 
     <!-- Floating WhatsApp Button -->
-    <a href="https://wa.me/15053339216" class="whatsapp-float" target="_blank" aria-label="Chat on WhatsApp" rel="noopener noreferrer">
-        <i class="fab fa-whatsapp" aria-hidden="true"></i>
+    <a href="https://wa.me/15053339216?text=Hello%20iCloudiptv,%20I%20have%20a%20question" class="whatsapp-float" target="_blank" rel="noopener noreferrer" aria-label="Chat on WhatsApp">
+        <i class="fab fa-whatsapp"></i>
     </a>
 
     <!-- Footer -->
@@ -955,64 +934,25 @@
         <p>&copy; 2026 iCloudiptv. All rights reserved.</p>
     </footer>
 
-    <!-- Scripts -->
+    <!-- FAQ Accordion JavaScript -->
     <script>
-        // Country selection sync
-        document.getElementById('country').addEventListener('change', function() {
-            var selectedOption = this.options[this.selectedIndex];
-            var countryCode = selectedOption.getAttribute('data-code');
-            if (countryCode) {
-                document.getElementById('country_code').value = countryCode;
-            }
-        });
-
-        // FAQ Accordion Toggle Script
-        const faqItems = document.querySelectorAll('.faq-item');
-        faqItems.forEach(item => {
-            const questionBtn = item.querySelector('.faq-question');
-            questionBtn.addEventListener('click', () => {
-                const isActive = item.classList.contains('active');
-                faqItems.forEach(i => i.classList.remove('active'));
-                if (!isActive) {
-                    item.classList.add('active');
-                }
+        document.querySelectorAll('.faq-question').forEach(button => {
+            button.addEventListener('click', () => {
+                const faqItem = button.parentElement;
+                faqItem.classList.toggle('active');
             });
         });
 
-        // Formspree Async Handler
-        const form = document.getElementById('contact-form');
-        const submitBtn = document.getElementById('submit-btn');
+        // Automatically update phone code based on selected country
+        const countrySelect = document.getElementById('country');
+        const phoneCodeInput = document.getElementById('phone-code');
 
-        form.addEventListener('submit', async function(event) {
-            event.preventDefault();
-            
-            submitBtn.innerText = "Sending...";
-            submitBtn.disabled = true;
-
-            const formData = new FormData(form);
-
-            try {
-                const response = await fetch(form.action, {
-                    method: 'POST',
-                    body: formData,
-                    headers: {
-                        'Accept': 'application/json'
-                    }
-                });
-
-                if (response.ok) {
-                    window.location.href = "https://cloudblai.live/";
-                } else {
-                    alert("There was an issue sending your message. Please try again.");
-                    submitBtn.innerText = "Submit";
-                    submitBtn.disabled = false;
-                }
-            } catch (error) {
-                alert("There was an error connecting to the server. Please check your internet connection.");
-                submitBtn.innerText = "Submit";
-                submitBtn.disabled = false;
-            }
+        countrySelect.addEventListener('change', function() {
+            const selectedOption = countrySelect.options[countrySelect.selectedIndex];
+            const code = selectedOption.getAttribute('data-code');
+            phoneCodeInput.value = code ? code : '';
         });
     </script>
+
 </body>
 </html>
